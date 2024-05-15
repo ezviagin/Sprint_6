@@ -2,7 +2,6 @@ import allure
 import pytest
 from selenium import webdriver
 
-
 from locators.home_page_locators import HomePageLocators
 from locators.order_page_locators import OrderPageLocators
 from pages.home_page import YaScooterHomePage
