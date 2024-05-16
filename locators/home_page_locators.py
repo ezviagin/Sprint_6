@@ -18,8 +18,13 @@ class HomePageLocators:
 
     # Геттер пунктов "Вопросы о важном"
     @staticmethod
+    def get_question_id_text(question_id):
+        return [By.XPATH, f".//div[@id='accordion__panel-{question_id}' and not(@hidden)]"]
+
+    # Геттер пунктов "Вопросы о важном"
+    @staticmethod
     def get_question_button(reply):
         return [By.XPATH, f".//div[@class='accordion__panel' and @id='accordion__panel-{reply}']/p"]
 
     # Кнопка "Да все привыкли"
-    accept_cookie_button = [By.XPATH, ".//button[@id='rcc-confirm-button']"]
+    accept_cookies_button = [By.XPATH, ".//button[@id='rcc-confirm-button']"]

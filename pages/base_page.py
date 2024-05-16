@@ -24,7 +24,6 @@ class BasePage:
             return WebDriverWait(self.driver, timeout).until(ec.presence_of_element_located(locator),
                                                              f"Can't find element by locator {locator}")
         except TimeoutError:
-            print(f"Element with locator {locator} not found within {timeout} seconds")
             return None
 
     def find_elements(self, locator: tuple[str, str], timeout: int = 10):
@@ -32,7 +31,6 @@ class BasePage:
             return WebDriverWait(self.driver, timeout).until(ec.presence_of_all_elements_located(locator),
                                                              f"Can't find elements by locator {locator}")
         except TimeoutError:
-            print(f"Elements with locator {locator} not found within {timeout} seconds")
             return None
 
     def click_element(self, locator: tuple[str, str], timeout: int = 10):
@@ -40,7 +38,6 @@ class BasePage:
         if element:
             element.click()
         else:
-            print(f"Failed to click on {locator}, check if it's present of if locator is correct.")
             return
 
     def enter_text(self, locator: tuple[str, str], text: str, timeout: int = 10):
@@ -49,21 +46,19 @@ class BasePage:
             element.clear()
             element.send_keys(text)
         else:
-            print(f"Failed to fill text field with locator {locator}.")
+            return None
 
     def element_is_visible(self, locator: tuple[str, str], timeout: int = 10):
         try:
             return WebDriverWait(self.driver, timeout).until(ec.visibility_of_element_located(locator))
         except TimeoutError:
-            print(f"Element with locator {locator} not visible after {timeout} seconds.")
-            return None
+            return False
 
     def element_is_present(self, locator: tuple[str, str], timeout: int = 10):
         try:
             WebDriverWait(self.driver, timeout).until(ec.presence_of_element_located(locator))
             return True
         except TimeoutError:
-            print(f"Element with locator {locator} not present after {timeout} seconds.")
             return False
 
     def scroll_to_element(self, locator: tuple[str, str], timeout: int = 10):
@@ -71,8 +66,8 @@ class BasePage:
         self.element_is_visible(locator, timeout)
 
     @allure.step('Принять cookie')
-    def accept_cookie(self):
-        self.click_element(HomePageLocators.accept_cookie_button)
+    def accept_cookies(self):
+        self.click_element(HomePageLocators.accept_cookies_button)
 
     def delete_all_cookies(self):
         self.driver.delete_all_cookies()

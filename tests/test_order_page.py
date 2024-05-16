@@ -1,7 +1,7 @@
 import allure
 import pytest
-from selenium import webdriver
 
+from conftest import driver
 from locators.order_page_locators import OrderPageLocators
 from locators.home_page_locators import HomePageLocators
 from pages.order_page import YaScooterOrderPage
@@ -13,12 +13,6 @@ import utils.urls as url
 @allure.parent_suite('Оформление заказа')
 @allure.suite('Order')
 class TestOrderPage:
-    driver = None
-
-    @classmethod
-    def setup_class(cls):
-        cls.driver = webdriver.Firefox()
-
     @allure.feature('Заказ самоката')
     @allure.story('При нажатии на любую кнопку "Заказать" с домашней страницы открывается форма заказа')
     @allure.title('Заказ самоката до получения номера заказа')
@@ -31,10 +25,10 @@ class TestOrderPage:
                                  (HomePageLocators.order_from_home_page_button, 'data_set_1'),
                                  (HomePageLocators.order_from_home_page_button, 'data_set_2'),
                              ])
-    def test_create_complete_order_header_and_page_order_buttons_positive(self, order_button, data_set):
-        page = YaScooterOrderPage(self.driver)
+    def test_create_complete_order_header_and_page_order_buttons_positive(self, driver, order_button, data_set):
+        page = YaScooterOrderPage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
-        page.accept_cookie()
+        page.accept_cookies()
 
         page.scroll_to_element(order_button)
         page.click_element(order_button)
@@ -74,10 +68,10 @@ class TestOrderPage:
                                 HomePageLocators.order_from_home_header_button,
                                 HomePageLocators.order_from_home_page_button,
                              ])
-    def test_create_order_until_order_complete_positive(self, order_button, ):
-        page = YaScooterOrderPage(self.driver)
+    def test_create_order_until_order_complete_positive(self, driver, order_button):
+        page = YaScooterOrderPage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
-        page.accept_cookie()
+        page.accept_cookies()
 
         page.scroll_to_element(order_button)
         page.click_element(order_button)
@@ -93,7 +87,3 @@ class TestOrderPage:
         page.delete_all_cookies()
 
         assert "Заказ оформлен" in page.element_is_visible(OrderPageLocators.order_completed_header).text
-
-    @classmethod
-    def teardown_class(cls):
-        cls.driver.quit()

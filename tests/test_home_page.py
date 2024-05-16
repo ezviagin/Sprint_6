@@ -1,7 +1,7 @@
 import allure
 import pytest
-from selenium import webdriver
 
+from conftest import driver
 from locators.home_page_locators import HomePageLocators
 from locators.order_page_locators import OrderPageLocators
 from pages.home_page import YaScooterHomePage
@@ -13,12 +13,6 @@ import utils.urls as url
 @allure.parent_suite('Домашняя страница')
 @allure.suite('Home')
 class TestHomePage:
-    driver = None
-
-    @classmethod
-    def setup_class(cls):
-        cls.driver = webdriver.Firefox()
-
     @allure.feature('Нажатие на кнопки "Вопросы о важном"')
     @allure.story('При нажатии на вопрос в разделе "Вопросы о важном" выпадает текст с ответом')
     @allure.title('Выпадение ответа при нажатии')
@@ -36,13 +30,13 @@ class TestHomePage:
             (7, expected.text7),
         ]
     )
-    def test_click_on_all_questions_about_important(self, question_id, expected_reply):
-        page = YaScooterHomePage(self.driver)
+    def test_click_on_all_questions_about_important(self, driver, question_id, expected_reply):
+        page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
 
         page.scroll_to_question_about_important_section()
         page.click_question_buttons(question_id)
-        res = page.find_element(HomePageLocators.get_question_button(question_id))
+        res = page.get_question_button_text(question_id)
 
         assert res.is_displayed() and res.text == expected_reply
 
@@ -57,8 +51,8 @@ class TestHomePage:
                                  HomePageLocators.order_from_home_page_button
                              ]
                              )
-    def test_click_on_order_buttons_from_header_and_home_sections(self, order_button):
-        page = YaScooterHomePage(self.driver)
+    def test_click_on_order_buttons_from_header_and_home_sections(self, driver, order_button):
+        page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
 
         page.scroll_to_element(order_button)
@@ -72,8 +66,8 @@ class TestHomePage:
     @allure.title('Открытие вкладки /order')
     @allure.description('Проверка корректных открытия и перехода на страницу dzen.ru после клика на логотип Yandex в '
                         'шапке главной страницы')
-    def test_click_on_yandex_logo_from_home_page(self):
-        page = YaScooterHomePage(self.driver)
+    def test_click_on_yandex_logo_from_home_page(self, driver):
+        page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
 
         page.click_yandex_logo_button()
@@ -87,8 +81,8 @@ class TestHomePage:
     @allure.title('Открытие вкладки /order')
     @allure.description('Проверка корректных открытия и перехода на страницу dzen.ru после клика на логотип Yandex в '
                         'шапке страницы "Оформление заказа"')
-    def test_click_on_yandex_logo_from_home_page(self):
-        page = YaScooterHomePage(self.driver)
+    def test_click_on_yandex_logo_from_home_page(self, driver):
+        page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_ORDER_PAGE)
 
         page.click_yandex_logo_button()
@@ -102,8 +96,8 @@ class TestHomePage:
     @allure.title('Остаемся на домашней странице')
     @allure.description('Проверка корректных открытия и перехода на домашнюю страницу после клика на логотип Самокат в '
                         'шапке домашней страницы')
-    def test_click_on_ya_scooter_logo_from_home_page(self):
-        page = YaScooterHomePage(self.driver)
+    def test_click_on_ya_scooter_logo_from_home_page(self, driver):
+        page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
         page.click_ya_scooter_logo_button()
 
@@ -114,13 +108,9 @@ class TestHomePage:
     @allure.title('Открытие домашней страницы')
     @allure.description('Проверка корректных открытия и перехода на страницу dzen.ru после клика на логотип "Самокат" в'
                         'шапке страницы "Оформление заказа"')
-    def test_click_on_ya_scooter_logo_from_order_page(self):
-        page = YaScooterHomePage(self.driver)
+    def test_click_on_ya_scooter_logo_from_order_page(self, driver):
+        page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_ORDER_PAGE)
         page.click_ya_scooter_logo_button()
 
         assert url.YA_SCOOTER_HOME_PAGE == page.current_url()
-
-    @classmethod
-    def teardown_class(cls):
-        cls.driver.quit()
