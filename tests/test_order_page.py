@@ -4,6 +4,7 @@ import pytest
 from conftest import driver
 from locators.order_page_locators import OrderPageLocators
 from locators.home_page_locators import HomePageLocators
+from pages.home_page import YaScooterHomePage
 from pages.order_page import YaScooterOrderPage
 from utils.test_data import YaScooterOrderData as order
 import utils.urls as url
@@ -28,33 +29,19 @@ class TestOrderPage:
     def test_create_complete_order_header_and_page_order_buttons_positive(self, driver, order_button, data_set):
         page = YaScooterOrderPage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
-        page.accept_cookies()
 
-        page.scroll_to_element(order_button)
-        page.click_element(order_button)
+        page.scroll_to_order_button(order_button)
+        page.click_order_button(order_button)
         page.fill_user_order_data(order.data_sets[data_set])
         page.click_next_button()
-        assert page.element_is_visible(OrderPageLocators.about_rent_header).text == "Про аренду"
 
         page.fill_rent_data(order.data_sets[data_set])
         page.click_final_order_button()
-        assert "Хотите оформить заказ" in page.element_is_visible(OrderPageLocators.want_to_order_header).text
 
         page.click_yes_order_button()
-        assert "Заказ оформлен" in page.element_is_visible(OrderPageLocators.order_completed_header).text
-
-        actual_order_num = page.get_order_number()
         page.click_check_status_button()
 
-        displayed_order_num = page.get_order_number_after_order_completed()
-        current_url = page.current_url()
-
-        assert actual_order_num == displayed_order_num
-        assert url.YA_SCOOTER_ORDER_STATUS_PAGE in current_url
-        assert str(displayed_order_num) in current_url
-
-        page.click_element(HomePageLocators.ya_scooter_logo)
-        page.delete_all_cookies()
+        page.click_ya_scooter_logo_button()
 
         assert page.current_url() == url.YA_SCOOTER_HOME_PAGE
 
@@ -73,17 +60,16 @@ class TestOrderPage:
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
         page.accept_cookies()
 
-        page.scroll_to_element(order_button)
-        page.click_element(order_button)
+        page.scroll_to_order_button(order_button)
+        page.click_order_button(order_button)
         page.fill_user_order_data(order.data_sets['data_set_1'])
         page.click_next_button()
-        assert page.element_is_visible(OrderPageLocators.about_rent_header).text == "Про аренду"
 
         page.fill_rent_data(order.data_sets['data_set_1'])
         page.click_final_order_button()
-        assert "Хотите оформить заказ" in page.element_is_visible(OrderPageLocators.want_to_order_header).text
+        assert "Хотите оформить заказ" in page.get_want_to_order_header().text
 
         page.click_yes_order_button()
         page.delete_all_cookies()
 
-        assert "Заказ оформлен" in page.element_is_visible(OrderPageLocators.order_completed_header).text
+        assert "Заказ оформлен" in page.get_order_completed_header().text

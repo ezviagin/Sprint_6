@@ -55,9 +55,9 @@ class TestHomePage:
         page = YaScooterHomePage(driver)
         page.navigate(url.YA_SCOOTER_HOME_PAGE)
 
-        page.scroll_to_element(order_button)
-        page.click_element(order_button)
-        page.element_is_visible(OrderPageLocators.order_header)
+        page.scroll_to_order_button(order_button)
+        page.click_order_button(order_button)
+        page.wait_for_order_header_text()
 
         assert page.current_url() == url.YA_SCOOTER_ORDER_PAGE
 

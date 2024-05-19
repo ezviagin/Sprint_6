@@ -1,10 +1,12 @@
-import allure
-from locators.order_page_locators import OrderPageLocators
-from pages.base_page import BasePage
 import re
 
+import allure
 
-class YaScooterOrderPage(BasePage):
+from locators.order_page_locators import OrderPageLocators
+from pages.home_page import YaScooterHomePage
+
+
+class YaScooterOrderPage(YaScooterHomePage):
     def __init__(self, driver):
         super().__init__(driver)
 
@@ -93,3 +95,9 @@ class YaScooterOrderPage(BasePage):
     @allure.step('Получить номер заказа после оформления')
     def get_order_number_after_order_completed(self) -> int:
         return int(self.find_element(OrderPageLocators.order_num_track_field).get_attribute('value'))
+
+    def get_want_to_order_header(self):
+        return self.element_is_visible(OrderPageLocators.want_to_order_header)
+
+    def get_order_completed_header(self):
+        return self.element_is_visible(OrderPageLocators.order_completed_header)

@@ -1,6 +1,7 @@
 import allure
 
 from locators.home_page_locators import HomePageLocators
+from locators.order_page_locators import OrderPageLocators
 from pages.base_page import BasePage
 
 
@@ -28,3 +29,12 @@ class YaScooterHomePage(BasePage):
 
     def get_question_button_text(self, question_id):
         return self.find_element(HomePageLocators.get_question_button(question_id))
+
+    def scroll_to_order_button(self, order_button):
+        self.scroll_to_element(order_button)
+
+    def click_order_button(self, order_button):
+        self.click_element(order_button)
+
+    def wait_for_order_header_text(self):
+        self.element_is_visible(OrderPageLocators.order_header)
